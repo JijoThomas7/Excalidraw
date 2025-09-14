@@ -3,14 +3,33 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import { middleware } from "./middleware";
 import { CreateuserSchema,SigninSchema,CreateroomSchema } from "@repo/common/types";
+import { prismaClient } from "@repo/db/client";
 
 const app = express();
+app.use(express.json());
 
-app.post("/signup",(req,res)=>{
-    const data = CreateuserSchema.safeParse(req.body);
-    if(!data.success){
+app.post("/signup",async(req,res)=>{
+    const parsedData = CreateuserSchema.safeParse(req.body);
+    if(!parsedData.success){
         return res.json({
             "message" : "Incorrect inputs"
+        })
+    }
+    try{
+    const user=await prismaClient.user.create({
+        data : {
+            email : parsedData.data?.username,
+            password : parsedData.data.password,
+            name : parsedData.data.name
+        }
+     })
+     res.json({
+        userId : user.id
+     })
+    }
+    catch(e){
+        res.status(401).json({
+            "message" : "User already existed with same email"
         })
     }
 })
@@ -41,4 +60,4 @@ app.post("/room",middleware,(req,res)=>{
     }
 })
 
-app.listen(3000);
+app.listen(3001);

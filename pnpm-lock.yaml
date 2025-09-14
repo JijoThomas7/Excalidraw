@@ -20,6 +20,9 @@ importers:
 
   apps/http-backend:
     dependencies:
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@types/express':
         specifier: ^5.0.3
         version: 5.0.3
@@ -104,12 +107,18 @@ importers:
 
   packages/backend-common:
     dependencies:
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
       node:
-        specifier: ^24.8.0
-        version: 24.8.0
+        specifier: ^23.5.0
+        version: 23.5.0
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -126,6 +135,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@prisma/client':
+        specifier: 6.16.1
+        version: 6.16.1(prisma@6.16.1(typescript@5.9.2))(typescript@5.9.2)
       prisma:
         specifier: ^6.16.1
         version: 6.16.1(typescript@5.9.2)
@@ -453,6 +465,18 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@prisma/client@6.16.1':
+    resolution: {integrity: sha512-QaBCOY29lLAxEFFJgBPyW3WInCW52fJeQTmWx/h6YsP5u0bwuqP51aP0uhqFvhK9DaZPwvai/M4tSDYLVE9vRg==}
+    engines: {node: '>=18.18'}
+    peerDependencies:
+      prisma: '*'
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+      typescript:
+        optional: true
 
   '@prisma/config@6.16.1':
     resolution: {integrity: sha512-sz3uxRPNL62QrJ0EYiujCFkIGZ3hg+9hgC1Ae1HjoYuj0BxCqHua4JNijYvYCrh9LlofZDZcRBX3tHBfLvAngA==}
@@ -1408,8 +1432,8 @@ packages:
   node-fetch-native@1.6.7:
     resolution: {integrity: sha512-g9yhqoedzIUm0nTnTqAQvueMPVOuIY16bqgAJJC8XOOubYFNwz6IER9qs0Gq2Xd0+CecCKFjtdDTMA4u4xG06Q==}
 
-  node@24.8.0:
-    resolution: {integrity: sha512-96VUgFV6DNxMQwi/V/mwSFLUDId93eHJQIA4XNZ3PTGHdek7EeY1bAHEUX51hpBcA5YT9kU7Yn6LP+6TmsMtlw==}
+  node@23.5.0:
+    resolution: {integrity: sha512-Wco8qYfFUAotVJJoMbB30cYdPbTqFd9QtzC528GvTCYWMldnPUu1pLNz4sKNKxal+dgBuAyUu8tRkeLVx1VT8Q==}
     engines: {npm: '>=5.0.0'}
     hasBin: true
 
@@ -2097,6 +2121,11 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
+
+  '@prisma/client@6.16.1(prisma@6.16.1(typescript@5.9.2))(typescript@5.9.2)':
+    optionalDependencies:
+      prisma: 6.16.1(typescript@5.9.2)
+      typescript: 5.9.2
 
   '@prisma/config@6.16.1':
     dependencies:
@@ -3292,7 +3321,7 @@ snapshots:
 
   node-fetch-native@1.6.7: {}
 
-  node@24.8.0:
+  node@23.5.0:
     dependencies:
       node-bin-setup: 1.1.4
 
