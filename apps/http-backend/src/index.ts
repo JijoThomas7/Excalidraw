@@ -35,28 +35,61 @@ app.post("/signup",async(req,res)=>{
     }
 })
 
-app.post("/signin",(req,res)=>{
-    const data = SigninSchema.safeParse(req.body);
-    if(!data.success){
-        return res.json({
-            "message" : "Invalid inputs"
+app.post("/signin",async(req,res)=>{
+    const parsedData = SigninSchema.safeParse(req.body);
+    if(!parsedData.success){
+        res.json({
+            "message" : "Invalid credentials" 
         })
+        return ;
     }
-    const userId = 1;
-    const token  = jwt.sign({
-        userId
-    },JWT_SECRET);
-    
+    const user =await prismaClient.user.findFirst({
+        where : {
+            email : parsedData.data.username,
+            password : parsedData.data.password
+        }
+    })
+    if(!user){
+        res.json({
+            "message" : "user are not authorized"
+        })
+        return ;
+    }
+    const token = jwt.sign({
+         userId : user.id
+    },JWT_SECRET)
+
+    res.json({
+        token
+    })
 })
 
-app.post("/room",middleware,(req,res)=>{
-    const data = CreateroomSchema.safeParse(req.body);
-    if(!data.success){
-        return res.json({
-            "message" : "Invalid inputs"
-        })
+app.post("/room",middleware,async(req,res)=>{
+    const parsedData = CreateroomSchema.safeParse(req.body);
+    if(!parsedData.success){
         res.json({
-            userId:"123"
+            "message" : "Invalid credentials" 
+        })
+        return ;
+    }
+  //  @ts-ignore
+    const userId = req.userId ; 
+
+    try{
+    const room = await prismaClient.room.create ({
+        data : {
+            slug : parsedData.data.roomname,
+            adminId : userId
+        }
+    })
+
+    res.json ({
+        roomId : room.id
+    })
+    }
+    catch(e){
+        res.status(411).json({
+            "message" : "room name already exist"
         })
     }
 })
