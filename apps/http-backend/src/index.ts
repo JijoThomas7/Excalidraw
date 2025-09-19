@@ -12,7 +12,7 @@ app.post("/signup",async(req,res)=>{
     const parsedData = CreateuserSchema.safeParse(req.body);   
     if(!parsedData.success){
         res.json({
-            "message" : "The given inputs are incorrect"
+            "message" : "The given input are incorrect"
         })
         return ;
     }
@@ -20,7 +20,7 @@ app.post("/signup",async(req,res)=>{
         const user = await prismaClient.user.create({
             data: {
                 email: parsedData.data.username,
-                // TODO: Hash the pw
+                
                 password: parsedData.data.password,
                 name: parsedData.data.name
             }
