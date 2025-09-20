@@ -89,7 +89,7 @@ app.post("/room",middleware,async(req,res)=>{
     }
     catch(e){
         res.status(411).json({
-            "message" : "room name already exist"
+            "message" : "room name already exists"
         })
     }
 })
