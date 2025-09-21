@@ -1,25 +1,56 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer,WebSocket } from 'ws';
 import jwt, { JwtPayload } from "jsonwebtoken";
 import {JWT_SECRET} from "@repo/backend-common/config";
+import { prismaClient } from "@repo/db/client";
 
 const wss = new WebSocketServer({ port: 8080 });
 
-wss.on('connection', function connection(ws,request) {
+interface User {
+  ws: WebSocket,
+  rooms: string[],
+  userId: string
+}
+
+const users: User[] = [];
+
+function checkUser(token: string): string | null {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    if (typeof decoded == "string") {
+      return null;
+    }
+
+    if (!decoded || !decoded.userId) {
+      return null;
+    }
+
+    return decoded.userId;
+  } catch(e) {
+    return null;
+  }
+  return null;
+}
+
+wss.on('connection', function connection(ws, request) {
   const url = request.url;
-  if(!url){
+  if (!url) {
     return;
   }
-  const queryparams = new URLSearchParams(url.split("?")[1]);
-  const token =queryparams.get("token") || "";
-  const decode = jwt.verify(token,JWT_SECRET);
-  if(!decode || !(decode as JwtPayload).userId){
-    ws.close();
-    return;
+  const queryParams = new URLSearchParams(url.split('?')[1]);
+  const token = queryParams.get('token') || "";
+  const userId = checkUser(token);
+
+  if (userId == null) {
+    ws.close()
+    return null;
   }
 
-  ws.on('message', function message(data) {
-    console.log('received: %s', data);
-  });
+  users.push({
+    userId,
+    rooms: [],
+    ws
+  })
 
   ws.send('something');
 });
