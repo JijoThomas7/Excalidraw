@@ -4,7 +4,7 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 import { middleware } from "./middleware";
 import { CreateuserSchema,SigninSchema,CreateroomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client";
-//add something in the codes and 
+//add something in the codes and ssaa
 const app = express();
 app.use(express.json());
 
