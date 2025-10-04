@@ -12,7 +12,7 @@ app.post("/signup",async(req,res)=>{
     const parsedData = CreateuserSchema.safeParse(req.body);   
     if(!parsedData.success){
         res.json({
-            "message" : "The given input are incorrect"
+            "message" : "The given input are invalid"
         })
         return ;
     }
